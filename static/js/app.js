@@ -1,4 +1,6 @@
 $(function () {
+    //stats
+    var stats = initStats();
     // create a new scene, camera, renderer, and visual aid
     var scene = new THREE.Scene(),
         camera = new THREE.PerspectiveCamera(
@@ -10,7 +12,7 @@ $(function () {
         axes = new THREE.AxisHelper(10);
 
     // set renderer properties
-    renderer.setClearColorHex(0xeeeeee, 1.0);
+    renderer.setClearColor(0xeeeeee, 1.0);
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.shadowMapEnabled = true;
     
@@ -46,7 +48,7 @@ function setupGeometry (scene) {
     scene.add(plane);
 
     // create a cube and set properties
-    var cubeGeometry = new THREE.CubeGeometry(4, 4, 4),
+    var cubeGeometry = new THREE.BoxGeometry(4, 4, 4),
         cubeMaterial = new THREE.MeshLambertMaterial({ color: 0xff0000}),
         cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
     cube.position.x = -4;
@@ -81,4 +83,14 @@ function setupLighting (scene) {
     spotlight.position.set(-40, 60, -10);
     spotlight.castShadow = true; // shadows on
     scene.add(spotlight);
+}
+
+function initStats() {
+    var stats = new Stats();
+    stats.setMode(0);
+    stats.domElement.style.position = 'absolute';
+    stats.domElement.style.left = '0px';
+    stats.domElement.style.top = '0px';
+    $("#stats").append(stats.domElement);
+    return stats;
 }
