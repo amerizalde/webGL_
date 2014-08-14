@@ -1,14 +1,17 @@
-$(function () {
+var stats, scene, camera;
+
+function loader () {
     //stats
-    var stats = initStats();
+    stats = initStats();
     // create a new scene, camera, renderer, and visual aid
-    var scene = new THREE.Scene(),
-        camera = new THREE.PerspectiveCamera(
-            45,
-            window.innerWidth / window.innerHeight,
-            0.1,
-            1000),
-        renderer = new THREE.WebGLRenderer(),
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(
+        45,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000);
+    
+    var renderer = new THREE.WebGLRenderer(),
         axes = new THREE.AxisHelper(10);
 
     // set renderer properties
@@ -27,10 +30,14 @@ $(function () {
     $("#container").append(renderer.domElement);
     // render the scene
     (function renderScene () {
+        var obj = scene.getObjectByName("cube");
+        obj.rotation.x += 0.02;
+        obj.rotation.y += 0.05;
+        obj.rotation.z += 0.02;
         requestAnimationFrame(renderScene); // give the browser control over timing
         renderer.render(scene, camera); // render the scene
     }) ();
-});
+}
 
 function setupGeometry (scene) {
     // create ground plane and set properties
@@ -55,6 +62,7 @@ function setupGeometry (scene) {
     cube.position.y = 3;
     cube.position.z = 0;
     cube.castShadow = true; // shadows on
+    cube.name = "cube";
     
     scene.add(cube);
 
