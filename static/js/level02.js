@@ -13,19 +13,26 @@ EarthApp.prototype.init = function (param) {
     var earth = new Earth();
     earth.init();
     this.addObject(earth);
+
+    var sunLight = new Sun();
+    sunLight.init();
+    this.addObject(sunLight);
 };
 
+// Earth object
 var Earth = function () {
     Sim.Object.call(this);
 };
 
+Earth.ROTATION_Y = 0.0025;
+Earth.TILT = 0.41;
 Earth.prototype = new Sim.Object();
 Earth.prototype.init = function () {
     // Create an Earth sphere with texture
     var earthMap = "assets/images/earth_surface_2048.jpg",
-        geom = new THREE.SphereGeometry(1, 32, 32),
+        geom = new THREE.SphereGeometry(1, 32, 32), // (radius, rows, columns)
         texture = THREE.ImageUtils.loadTexture(earthMap),
-        material = new THREE.MeshBasicMaterial( {map: texture}),
+        material = new THREE.MeshPhongMaterial( {map: texture}),
         mesh = new THREE.Mesh( geom, material);
     
     mesh.rotation.z = Earth.TILT;
@@ -38,8 +45,20 @@ Earth.prototype.update = function () {
     this.object3D.rotation.y += Earth.ROTATION_Y;
 }
 
-Earth.ROTATION_Y = 0.0025;
-Earth.TILT = 0.41;
+// Sun object
+var Sun = function () {
+    Sim.Object.call(this);
+}
+
+Sun.prototype = new Sim.Object();
+Sun.prototype.init = function () {
+    // create a point light
+    var light = new THREE.PointLight( 0xffffff, 2, 100);
+    light.position.set(-10, 0, 20);
+
+    // tell the framework about our object
+    this.setObject3D(light);
+}
 
 $(document).ready( function () {
     var app = new EarthApp();
