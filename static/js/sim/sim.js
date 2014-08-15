@@ -189,7 +189,7 @@ Sim.App.prototype.initMouse = function()
 	dom.addEventListener( 'mouseup', 
 			function(e) { that.onDocumentMouseUp(e); }, false );
 	
-	$(dom).mousewheel(
+	$(dom).bind('wheel',
 	        function(e, delta) {
 	            that.onDocumentMouseScroll(e, delta);
 	        }
