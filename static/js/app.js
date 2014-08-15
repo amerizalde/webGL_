@@ -1,6 +1,10 @@
-var stats, scene, camera;
+var stats,
+    scene,
+    camera,
+    renderer,
+    animating = false;
 
-function loader () {
+$(document).ready(function () {
     //stats
     stats = initStats();
     // create a new scene, camera, renderer, and visual aid
@@ -9,14 +13,14 @@ function loader () {
         45,
         window.innerWidth / window.innerHeight,
         0.1,
-        1000);
+        1000),
+    renderer = new THREE.WebGLRenderer({ antialias: true});
     
-    var renderer = new THREE.WebGLRenderer(),
-        axes = new THREE.AxisHelper(10);
+    var axes = new THREE.AxisHelper(10);
 
     // set renderer properties
     renderer.setClearColor(0xeeeeee, 1.0);
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(window.innerWidth , window.innerHeight);
     renderer.shadowMapEnabled = true;
     
     // add axis visual aid to scene container
@@ -28,16 +32,23 @@ function loader () {
     
     // put the renderer into the DOM
     $("#container").append(renderer.domElement);
+    
+    mouseHandler();
+    
     // render the scene
     (function renderScene () {
-        var obj = scene.getObjectByName("cube");
-        obj.rotation.x += 0.02;
-        obj.rotation.y += 0.05;
-        obj.rotation.z += 0.02;
+        // toggle animation
+        if (animating) {
+            var obj = scene.getObjectByName("cube");
+            obj.rotation.x += 0.02;
+            obj.rotation.y += 0.05;
+            obj.rotation.z += 0.02;
+        }
+        
         requestAnimationFrame(renderScene); // give the browser control over timing
         renderer.render(scene, camera); // render the scene
     }) ();
-}
+});
 
 function setupGeometry (scene) {
     // create ground plane and set properties
@@ -54,9 +65,14 @@ function setupGeometry (scene) {
     // add plane to scene container
     scene.add(plane);
 
+    // load texture for cube
+    var mapUrl = "assets/3682835759_f22510210c.jpg";
+    var map = THREE.ImageUtils.loadTexture(mapUrl);
+    
     // create a cube and set properties
     var cubeGeometry = new THREE.BoxGeometry(4, 4, 4),
-        cubeMaterial = new THREE.MeshLambertMaterial({ color: 0xff0000}),
+        // create material with texture
+        cubeMaterial = new THREE.MeshLambertMaterial({ map: map}),
         cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
     cube.position.x = -4;
     cube.position.y = 3;
@@ -97,8 +113,21 @@ function initStats() {
     var stats = new Stats();
     stats.setMode(0);
     stats.domElement.style.position = 'absolute';
-    stats.domElement.style.left = '0px';
+    stats.domElement.style.left = '10px';
     stats.domElement.style.top = '0px';
     $("#stats").append(stats.domElement);
     return stats;
+}
+
+function mouseHandler() {
+    var dom = renderer.domElement;
+    // add a callback to the renderer div's mouse up event
+    dom.addEventListener('mouseup', onMouseUp, false);
+}
+
+function onMouseUp(event) {
+    // block any default mouse bindings
+    event.preventDefault();
+    // bool switch
+    animating = !animating;
 }
