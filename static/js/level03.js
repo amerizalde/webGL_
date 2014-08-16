@@ -23,6 +23,11 @@ var Earth = function () {
     Sim.Object.call(this);
 };
 
+Earth.ROTATION_Y = 0.00035;
+Earth.TILT = 0.41;
+Earth.CLOUDS_SCALE = 1.005;
+Earth.CLOUDS_ROTATION_Y = Earth.ROTATION_Y * 0.85;
+
 Earth.prototype = new Sim.Object();
 Earth.prototype.init = function () {
     // create a group
@@ -68,15 +73,25 @@ Earth.prototype.createGlobe = function () {
 }
 
 Earth.prototype.createClouds = function () {
+    var diffuseMap = THREE.ImageUtils.loadTexture("assets/images/earth_clouds_1024.png");
+    var material = new THREE.MeshLambertMaterial({
+        color: 0xffffff,
+        map: diffuseMap,
+        transparent: true
+    });
 
+    var geom = new THREE.SphereGeometry(Earth.CLOUDS_SCALE, 32, 32);
+    var mesh = new THREE.Mesh(geom, material);
+    mesh.rotation.y = Earth.TILT;
+
+    this.object3D.add(mesh);
+    this.cloudsMesh = mesh;
 }
 
 Earth.prototype.update = function () {
-    this.object3D.rotation.y += Earth.ROTATION_Y;
+    this.globeMesh.rotation.y += Earth.ROTATION_Y;
+    this.cloudsMesh.rotation.y += Earth.CLOUDS_ROTATION_Y;
 }
-
-Earth.ROTATION_Y = 0.0025;
-Earth.TILT = 0.41;
 
 // sun light
 var Sun = function () {
