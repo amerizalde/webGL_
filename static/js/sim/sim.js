@@ -70,7 +70,7 @@ Sim.Publisher.prototype.findSubscriber = function (subscribers, subscriber) {
             return i;
         }
     }
-    
+
     return -1;
 }
 
@@ -78,7 +78,7 @@ Sim.Publisher.prototype.findSubscriber = function (subscribers, subscriber) {
 Sim.App = function()
 {
 	Sim.Publisher.call(this);
-	
+
 	this.renderer = null;
 	this.scene = null;
 	this.camera = null;
@@ -89,13 +89,15 @@ Sim.App.prototype = new Sim.Publisher;
 
 Sim.App.prototype.init = function(param)
 {
-	param = param || {};	
+	param = param || {};
 	var container = param.container;
 	var canvas = param.canvas;
-	
+	var width = window.innerWidth * 0.5;
+	var height = window.innerHeight * 0.5;
+
     // Create the Three.js renderer, add it to our div
     var renderer = new THREE.WebGLRenderer( { antialias: true, canvas: canvas } );
-    renderer.setSize(container.offsetWidth, container.offsetHeight);
+    renderer.setSize(width, height);
     container.appendChild( renderer.domElement );
 
     // Create a new Three.js scene
@@ -104,18 +106,18 @@ Sim.App.prototype.init = function(param)
     scene.data = this;
 
     // Put in a camera at a good default location
-    camera = new THREE.PerspectiveCamera( 45, container.offsetWidth / container.offsetHeight, 1, 10000 );
+    camera = new THREE.PerspectiveCamera( 45, width / height, 1, 10000 );
     camera.position.set( 0, 0, 3.3333 );
 
     scene.add(camera);
-    
+
     // Create a root object to contain all other scene objects
     var root = new THREE.Object3D();
     scene.add(root);
-    
+
     // Create a projector to handle picking
     var projector = new THREE.Projector();
-    
+
     // Save away a few things
     this.container = container;
     this.renderer = renderer;
@@ -123,7 +125,7 @@ Sim.App.prototype.init = function(param)
     this.camera = camera;
     this.projector = projector;
     this.root = root;
-    
+
     // Set up event handlers
     this.initMouse();
     this.initKeyboard();
@@ -136,7 +138,7 @@ Sim.App.prototype.run = function()
 	this.update();
 	this.renderer.render( this.scene, this.camera );
 	var that = this;
-	requestAnimationFrame(function() { that.run(); });	
+	requestAnimationFrame(function() { that.run(); });
 }
 
 // Update method - called once per tick
@@ -180,21 +182,21 @@ Sim.App.prototype.removeObject = function(obj)
 Sim.App.prototype.initMouse = function()
 {
 	var dom = this.renderer.domElement;
-	
+
 	var that = this;
-	dom.addEventListener( 'mousemove', 
+	dom.addEventListener( 'mousemove',
 			function(e) { that.onDocumentMouseMove(e); }, false );
-	dom.addEventListener( 'mousedown', 
+	dom.addEventListener( 'mousedown',
 			function(e) { that.onDocumentMouseDown(e); }, false );
-	dom.addEventListener( 'mouseup', 
+	dom.addEventListener( 'mouseup',
 			function(e) { that.onDocumentMouseUp(e); }, false );
-	
+
 	$(dom).bind('wheel',
 	        function(e, delta) {
 	            that.onDocumentMouseScroll(e, delta);
 	        }
 	    );
-	
+
 	this.overObject = null;
 	this.clickedObject = null;
 }
@@ -202,13 +204,13 @@ Sim.App.prototype.initMouse = function()
 Sim.App.prototype.initKeyboard = function()
 {
 	var dom = this.renderer.domElement;
-	
+
 	var that = this;
-	dom.addEventListener( 'keydown', 
+	dom.addEventListener( 'keydown',
 			function(e) { that.onKeyDown(e); }, false );
-	dom.addEventListener( 'keyup', 
+	dom.addEventListener( 'keyup',
 			function(e) { that.onKeyUp(e); }, false );
-	dom.addEventListener( 'keypress', 
+	dom.addEventListener( 'keypress',
 			function(e) { that.onKeyPress(e); }, false );
 
 	// so it can take focus
@@ -225,7 +227,7 @@ Sim.App.prototype.addDomHandlers = function()
 Sim.App.prototype.onDocumentMouseMove = function(event)
 {
     event.preventDefault();
-    
+
     if (this.clickedObject && this.clickedObject.handleMouseMove)
     {
 	    var hitpoint = null, hitnormal = null;
@@ -240,39 +242,39 @@ Sim.App.prototype.onDocumentMouseMove = function(event)
     else
     {
 	    var handled = false;
-	    
+
 	    var oldObj = this.overObject;
 	    var intersected = this.objectFromMouse(event.pageX, event.pageY);
 	    this.overObject = intersected.object;
-	
+
 	    if (this.overObject != oldObj)
 	    {
 	        if (oldObj)
 	        {
         		this.container.style.cursor = 'auto';
-        		
+
         		if (oldObj.handleMouseOut)
         		{
         			oldObj.handleMouseOut(event.pageX, event.pageY);
         		}
 	        }
-	
+
 	        if (this.overObject)
 	        {
 	        	if (this.overObject.overCursor)
 	        	{
 	        		this.container.style.cursor = this.overObject.overCursor;
 	        	}
-	        	
+
 	        	if (this.overObject.handleMouseOver)
 	        	{
 	        		this.overObject.handleMouseOver(event.pageX, event.pageY);
 	        	}
 	        }
-	        
+
 	        handled = true;
 	    }
-	
+
 	    if (!handled && this.handleMouseMove)
 	    {
 	    	this.handleMouseMove(event.pageX, event.pageY);
@@ -283,7 +285,7 @@ Sim.App.prototype.onDocumentMouseMove = function(event)
 Sim.App.prototype.onDocumentMouseDown = function(event)
 {
     event.preventDefault();
-        
+
     var handled = false;
 
     var intersected = this.objectFromMouse(event.pageX, event.pageY);
@@ -296,7 +298,7 @@ Sim.App.prototype.onDocumentMouseDown = function(event)
     		handled = true;
     	}
     }
-    
+
     if (!handled && this.handleMouseDown)
     {
     	this.handleMouseDown(event.pageX, event.pageY);
@@ -306,9 +308,9 @@ Sim.App.prototype.onDocumentMouseDown = function(event)
 Sim.App.prototype.onDocumentMouseUp = function(event)
 {
     event.preventDefault();
-    
+
     var handled = false;
-    
+
     var intersected = this.objectFromMouse(event.pageX, event.pageY);
     if (intersected.object)
     {
@@ -318,12 +320,12 @@ Sim.App.prototype.onDocumentMouseUp = function(event)
     		handled = true;
     	}
     }
-    
+
     if (!handled && this.handleMouseUp)
     {
     	this.handleMouseUp(event.pageX, event.pageY);
     }
-    
+
     this.clickedObject = null;
 }
 
@@ -340,35 +342,35 @@ Sim.App.prototype.onDocumentMouseScroll = function(event, delta)
 Sim.App.prototype.objectFromMouse = function(pagex, pagey)
 {
 	// Translate page coords to element coords
-	var offset = $(this.renderer.domElement).offset();	
+	var offset = $(this.renderer.domElement).offset();
 	var eltx = pagex - offset.left;
 	var elty = pagey - offset.top;
-	
+
 	// Translate client coords into viewport x,y
-    var vpx = ( eltx / this.container.offsetWidth ) * 2 - 1;
-    var vpy = - ( elty / this.container.offsetHeight ) * 2 + 1;
-    
+    var vpx = ( eltx / this.container.clientWidth ) * 2 - 1;
+    var vpy = - ( elty / this.container.clientHeight ) * 2 + 1;
+
     var vector = new THREE.Vector3( vpx, vpy, 0.5 );
 
     this.projector.unprojectVector( vector, this.camera );
-	
+
     var rc = new THREE.Raycaster( this.camera.position, vector.sub( this.camera.position ).normalize() );
 
     var intersects = rc.intersectObject( this.scene );
-	
-    if ( intersects.length > 0 ) {    	
-    	
+
+    if ( intersects.length > 0 ) {
+
     	var i = 0;
     	while(!intersects[i].object.visible)
     	{
     		i++;
     	}
-    	
+
     	var intersected = intersects[i];
 		var mat = new THREE.Matrix4().getInverse(intersected.object.matrixWorld);
     	var point = mat.multiplyVector3(intersected.point);
-    	
-		return (this.findObjectFromIntersected(intersected.object, intersected.point, intersected.face.normal));        	    	                             
+
+		return (this.findObjectFromIntersected(intersected.object, intersected.point, intersected.face.normal));
     }
     else
     {
@@ -414,7 +416,7 @@ Sim.App.prototype.onKeyUp = function(event)
 		this.handleKeyUp(event.keyCode, event.charCode);
 	}
 }
-	        
+
 Sim.App.prototype.onKeyPress = function(event)
 {
 	// N.B.: Chrome doesn't deliver keyPress if we don't bubble... keep an eye on this
@@ -427,10 +429,11 @@ Sim.App.prototype.onKeyPress = function(event)
 }
 
 Sim.App.prototype.onWindowResize = function(event) {
+	var width = window.innerWidth * 0.5;
+	var height = window.innerHeight * 0.5;
+	this.renderer.setSize(width, height);
 
-	this.renderer.setSize(this.container.offsetWidth, this.container.offsetHeight);
-
-	this.camera.aspect = this.container.offsetWidth / this.container.offsetHeight;
+	this.camera.aspect = width / height;
 	this.camera.updateProjectionMatrix();
 
 }
@@ -448,7 +451,7 @@ Sim.App.prototype.focus = function()
 Sim.Object = function()
 {
 	Sim.Publisher.call(this);
-	
+
 	this.object3D = null;
 	this.children = [];
 }
@@ -494,7 +497,7 @@ Sim.Object.prototype.setVisible = function(visible)
 			setVisible(obj.children[i], visible);
 		}
 	}
-	
+
 	if (this.object3D)
 	{
 		setVisible(this.object3D, visible);
@@ -522,7 +525,7 @@ Sim.Object.prototype.setObject3D = function(object3D)
 Sim.Object.prototype.addChild = function(child)
 {
 	this.children.push(child);
-	
+
 	// If this is a renderable object, add its object3D as a child of mine
 	if (child.object3D)
 	{
@@ -555,10 +558,10 @@ Sim.Object.prototype.getScene = function()
 		{
 			obj = obj.parent;
 		}
-		
+
 		scene = obj;
 	}
-	
+
 	return scene;
 }
 
