@@ -92,8 +92,8 @@ Sim.App.prototype.init = function(param)
 	param = param || {};
 	var container = param.container;
 	var canvas = param.canvas;
-	var width = window.innerWidth * 0.5;
-	var height = window.innerHeight * 0.5;
+	var width = 320;
+	var height = 240;
 
     // Create the Three.js renderer, add it to our div
     var renderer = new THREE.WebGLRenderer( { antialias: true, canvas: canvas } );
