@@ -5,10 +5,14 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>webGL Studies</title>
+    <meta name="description" content="webGL game studies using the Three.js Javascript library">
+    <meta name="author" content="andrewmerizalde@hotmail.com">
+    <title>WebGL Studies</title>
 
     <!-- Bootstrap -->
     <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Sidebar CSS-->
+    <link rel="stylesheet" href="/static/css/simple-sidebar.css">
     <!-- Game Font -->
     <link href='http://fonts.googleapis.com/css?family=Audiowide' rel='stylesheet' type='text/css'>
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -25,11 +29,10 @@
         width: 75%;
         position: fixed;
     }
-    .row {
-        left: 10px;
-    }
-    .item {
-        text-align: center;
+        
+    #menu-toggle {
+        margin-top: 1em;
+        padding: 5px;
     }
     </style>
 </head>
@@ -43,32 +46,63 @@
    </div>
    <div class="row"><br></div>
    
-   <div class="row">
-       <div class="col-xs-2">
+   <div id="wrapper">
+      <!-- Sidebar -->
+       <div id="sidebar-wrapper">
+           <ul class="sidebar-nav">
+               <li class="sidebar-brand">
+                   <a href="/">WebGL Studies</a>
+               </li>
+               <li><a href="/static/level01.html">Level 01</a></li>
+               <li><a href="/static/level02.html">Level 02</a></li>
+               <li><a href="/static/level03.html">Level 03</a></li>
+               
+               <li><a href="https://github.com/amerizalde">source code link</a></li>
+           </ul>
        </div>
-        <div class="col-xs-8 col-sm-6">
-        <!-- Center -->
-        <article><a href="/static/level01.html">Level 1</a>
-        This first scene is a basic interative animation. You can click anywhere in the scene view to start or stop the animation.</article>
-        <article><a href="/static/level02.html">Level 2</a>
+       <!-- end Sidebar-->
+       
+       <!--Page Content -->
+       <div id="page-content-wrapper">
+           <div class="container-fluid">
+               <div class="row">
+                   <div class="col-lg-12">
+                       <article>
+                            <h2><a href="/static/level01.html">Level 1</a></h2>
+                            This first scene is a basic interative animation. You can click anywhere in the scene view to start or stop the animation.
+                        </article>
+                   </div>
+               </div>
+               <div class="row">
+                   <div class="col-lg-12">
+                       <article><h2><a href="/static/level02.html">Level 2</a></h2>
         A spinning globe.</article>
-        <!-- End Center -->
-        </div>
-        <div class="col-xs-2">
-            <article><a href="/static/level01.html">Level 1</a></article>
-            <article><a href="/static/level02.html">Level 2</a></article>
-            <article><!-- next level --></article>
-        </div>
-    </div>
-   <footer>&nbsp;andrewmerizalde at hotmail -- <a href="https://github.com/amerizalde">repositories</a></footer>
+                   </div>
+               </div>
+               <div class="row">
+                   <div class="col-lg-12">
+                       <article><h2><a href="/static/level03.html">Level 3</a></h2>
+        A slightly more realistic spinning globe.</article>
+                   </div>
+               </div>
+               <div class="row">
+                  <div class="col-lg-12">
+                      <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle Menu</a>
+                  </div>
+               </div>
+           </div>
+       </div>
+       <!-- end Page Content -->
+   </div>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/bootstrap.min.js"></script>
-    <script>
-$(document).ready(function () {
-    $('.carousel').carousel();
-});
-    </script>
 </body>
+<script>
+$("#menu-toggle").click(function(e) {
+    e.preventDefault();
+    $("#wrapper").toggleClass("toggled");
+});
+</script>
 </html>
